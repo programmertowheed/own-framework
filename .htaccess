@@ -1,0 +1,15 @@
+
+<IfModule mod_rewrite.c>
+
+RewriteEngine On
+
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+
+RewriteRule ^(.+)$ index.php?$1 [QSA,L]
+ErrorDocument 404 http://localhost/elephant/404.php
+ErrorDocument 403 404.php
+
+</IfModule>
