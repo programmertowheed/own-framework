@@ -52,6 +52,7 @@ class Database extends \PDO
         foreach ($data as $key => $value) {
             $stmt->bindParam(":$key", $value);
         }
+
         return $stmt->execute();
     }
 

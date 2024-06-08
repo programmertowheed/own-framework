@@ -3,7 +3,9 @@
 use System\route\Base as Route;
 
 $route_file = [
-    "api"
+    "api",
+    "auth",
+    "web"
 ];
 
 

@@ -5,12 +5,18 @@ namespace App\Middleware;
 class Register
 {
 
-    public const webMiddleware = [
-        "auth" => Auth::class,
+    // This is global middleware
+    const webMiddleware = [
+//        "cors" => Cors::class,
     ];
 
-    public const middlewareGroup = [
+    // This middleware only for web route
+    const middlewareGroup = [
+        "authAPI" => APIAuth::class,
         "auth" => Auth::class,
+        "isLogin" => RedirectIfAuthenticate::class,
+        "cors" => Cors::class,
+        "can" => CheckPermission::class,
     ];
 
     public static function resolve($keys)
@@ -18,13 +24,26 @@ class Register
         if (count($keys) > 0) {
 
             foreach ($keys as $key) {
-                $middleware = static::middlewareGroup[$key] ?? false;
+                $middlewareName = $key;
+                $param = "";
 
-                if (!$middleware) {
-                    throw new \Exception("No matching middleware found for key '{$key}'.");
+                $text = explode(":", $key);
+                if (count($text) > 0) {
+                    if (isset($text[0])) {
+                        $middlewareName = $text[0];
+                    }
+                    if (isset($text[1])) {
+                        $param = $text[1];
+                    }
                 }
 
-                new $middleware();
+                $middleware = static::middlewareGroup[$middlewareName] ? static::middlewareGroup[$middlewareName] : false;
+
+                if (!$middleware) {
+                    throw new \Exception("No matching middleware found for key '{$middlewareName}'.");
+                }
+
+                new $middleware($param);
             }
         }
     }

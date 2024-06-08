@@ -1,5 +1,5 @@
-<?= includes("inc.header", ["page" => $page]) ?>
-<?= includes("inc.slider") ?>
+<?= includes("partials.inc.header", ["page" => "Home"]) ?>
+<?= includes("partials.inc.slider") ?>
 
     <main id="main">
 
@@ -60,27 +60,27 @@
             </div>
         </section><!-- End Why Us Section -->
 
-        <?php includes("home.about") ?>
+        <?php includes("partials.home.about") ?>
 
-        <?php includes("home.service") ?>
+        <?php includes("partials.home.service") ?>
 
-        <?php includes("home.value") ?>
+        <?php includes("partials.home.value") ?>
 
-        <?php includes("home.portfolio") ?>
+        <?php includes("partials.home.portfolio") ?>
 
-        <?php includes("home.testimonial") ?>
+        <?php includes("partials.home.testimonial") ?>
 
-        <?php includes("home.team") ?>
+        <?php includes("partials.home.team") ?>
 
-        <?php includes("home.client") ?>
+        <?php includes("partials.home.client") ?>
 
-        <?php //include_once("home/pricing.php")?>
+        <?php includes("partials.home.pricing") ?>
 
-        <?php //include_once("home/faq.php")?>
+        <?php includes("partials.home.faq") ?>
 
-        <?php //include_once("home/contact.php")?>
+        <?php includes("partials.home.contact") ?>
 
 
     </main><!-- End #main -->
 
-<?= includes("inc.footer") ?>
+<?= includes("partials.inc.footer") ?>

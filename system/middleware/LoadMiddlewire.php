@@ -4,10 +4,10 @@ namespace System\middleware;
 
 trait LoadMiddlewire
 {
-    public function __construct()
+    public function __construct($param)
     {
         parent::injectRequest();
-        $result = $this->handle();
+        $result = $this->handle($param);
         if (!$result) {
             exit();
         }

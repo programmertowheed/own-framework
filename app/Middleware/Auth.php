@@ -11,12 +11,13 @@ class Auth extends Middleware
 
     public function handle()
     {
-//        echo "<pre>";
-//        print_r($this->request);
-//        echo "</pre>";
-//        exit();
-//        echo "hello";
-        return true;
+        $uaer_data = getCookie(USER_COOKIE_NAME);
+
+        if (isset($uaer_data) && isset($uaer_data->user_id)) {
+            return true;
+        }
+
+        return redirectTo(HOME);
     }
 
 }

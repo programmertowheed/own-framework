@@ -14,11 +14,11 @@ class Request
         $data = [];
         $data['ip'] = $this->get_client_ip();
 
-        $json = json_decode(file_get_contents('php://input'), true) ?? [];
-        $post = $_POST ?? [];
+        $json = json_decode(file_get_contents('php://input'), true) ? json_decode(file_get_contents('php://input'), true) : [];
+        $post = $_POST ? $_POST : [];
 
         $data = array_merge($data, $json, $post);
-        return (object)$data ?? [];
+        return (object)$data ? (object)$data : [];
     }
 
     public function get_client_ip()

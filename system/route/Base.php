@@ -42,9 +42,10 @@ class Base
 
     private static function getMethod()
     {
-        $method = $_POST['_method'] ?? $_SERVER["REQUEST_METHOD"];
+        $method = isset($_POST['_method']) ? $_POST['_method'] : $_SERVER["REQUEST_METHOD"];
         $method = strtoupper($method);
 
+//        $allowed_method = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
         if (!in_array($method, METHOD_ARRAY)) {
             sendError("Route method not allow!");
             exit();
@@ -73,6 +74,7 @@ class Base
         if ($method == $request_method) {
             return true;
         }
+
         return false;
     }
 
@@ -102,6 +104,21 @@ class Base
         return $status;
     }
 
+    private static function startsWith($haystack, $needle)
+    {
+        $length = strlen($needle);
+        return substr($haystack, 0, $length) === $needle;
+    }
+
+    private static function endsWith($haystack, $needle)
+    {
+        $length = strlen($needle);
+        if (!$length) {
+            return true;
+        }
+        return substr($haystack, -$length) === $needle;
+    }
+
     private static function pathMatch($url, $path)
     {
         $status = false;
@@ -114,7 +131,8 @@ class Base
 
         if ($url_count > 0 && $path_count && $url_count <= $path_count) {
             foreach ($paths as $key => $value) {
-                if (str_starts_with($value, '{') && str_ends_with($value, '}') && substr("$value", -2) === "?}") {
+
+                if (self::startsWith($value, '{') && self::endsWith($value, '}') && substr("$value", -2) === "?}") {
                     $path_count_less -= 1;
                     if (array_key_exists($key, $urls)) {
                         $value = str_replace("{", "", $value);
@@ -122,7 +140,7 @@ class Base
                         self::$parameters[$value] = $urls[$key];
                     }
                     $status = true;
-                } elseif (str_starts_with($value, '{') && str_ends_with($value, '}')) {
+                } elseif (self::startsWith($value, '{') && self::endsWith($value, '}')) {
                     if (array_key_exists($key, $urls)) {
                         $value = str_replace("{", "", $value);
                         $value = str_replace("}", "", $value);
@@ -197,7 +215,14 @@ class Base
             if (self::checkMethod($route["method"]) && self::checkPath($route["path"])) {
                 Register::resolve($route["middleware"]);
                 if (is_callable($route["controller"])) {
-                    call_user_func($route["controller"]);
+//                    call_user_func($route["controller"]);
+                    if (!is_array($route["controller"])) {
+                        $route["controller"]();
+                        exit();
+                    }
+                    $ctrl = new $route["controller"][0]();
+                    $method = $route["controller"][1];
+                    $ctrl->$method(self::$parameters);
                     exit();
                 }
                 if (is_array($route["controller"])) {
@@ -208,14 +233,28 @@ class Base
             }
         }
 
-        sendError("Route not found!");
+        if (self::startsWith(self::getURI(), 'api/')) {
+            foreach (self::$routes as $route) {
+                if (self::checkPath($route["path"])) {
+                    if (!self::checkMethod($route["method"])) {
+                        return response()->json(["message" => "Method not allowed!"], '405');
+                    }
+                }
+            }
+            return response()->json(["message" => "Route not found!"], '404');
+        } else {
+            include BASE_PATH . "system/view/error/404.php";
+        }
+//        sendError("Route not found!");
         die();
     }
 
     public function middleware($keys = [])
     {
         foreach ($keys as $key) {
-            self::$routes[array_key_last(self::$routes)]["middleware"][] = $key;
+            end(self::$routes);
+            $array_key_last = key(self::$routes);
+            self::$routes[$array_key_last]["middleware"][] = $key;
         }
     }
 
@@ -224,7 +263,8 @@ class Base
         if (count($middlewares) <= 0) {
             throw new \Exception("Middleware array should not be empty! in ");
         }
-        $lastKey = array_key_last(self::$routes);
+        end(self::$routes);
+        $lastKey = key(self::$routes);
         if ($lastKey && $lastKey > 0) {
             $lastKey += 1;
         } else {
@@ -235,7 +275,8 @@ class Base
             }
         }
         call_user_func($function);
-        $endKey = array_key_last(self::$routes);
+        end(self::$routes);
+        $endKey = key(self::$routes);
 
         for ($i = $lastKey; $i <= $endKey; $i++) {
             foreach ($middlewares as $key) {

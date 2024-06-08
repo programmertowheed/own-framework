@@ -7,7 +7,7 @@
 </head>
 <body class="text-zinc-700 dark:text-zinc-300 relative w-full min-h-screen bg-no-repeat duration-300">
 
-<section>
+<section class="w-full">
     <div class="bg-black text-white">
         <div class="flex h-screen">
             <div class="m-auto text-center">
@@ -18,7 +18,8 @@
                 </div>
                 <p class="text-sm md:text-base text-red-600 p-2 mb-4"><?= isset($msg) ? $msg : "" ?></p>
                 <a href="<?= url("/") ?>"
-                   class="bg-transparent hover:bg-yellow-300 text-yellow-300 hover:text-white rounded shadow hover:shadow-lg py-2 px-4 border border-yellow-300 hover:border-transparent">Retry</a>
+                   class="bg-transparent hover:bg-yellow-300 text-yellow-300 hover:text-black rounded shadow hover:shadow-lg py-2 px-4 border border-yellow-300 hover:border-transparent">Back
+                    To Home</a>
             </div>
         </div>
     </div>
