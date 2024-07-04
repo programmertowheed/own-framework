@@ -11,8 +11,14 @@ class Request
 
     public function serverRequest()
     {
+        $uaer_data = getCookie(USER_COOKIE_NAME);
+
         $data = [];
         $data['ip'] = $this->get_client_ip();
+
+        if (isset($uaer_data) && $uaer_data->user_id) {
+            $data['auth'] = $uaer_data;
+        }
 
         $json = json_decode(file_get_contents('php://input'), true) ? json_decode(file_get_contents('php://input'), true) : [];
         $post = $_POST ? $_POST : [];
