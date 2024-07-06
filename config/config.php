@@ -3,7 +3,9 @@ define("BASE_PATH", __DIR__ . "/../");
 define("APP_URL", env("APP_URL", "http://localhost/elephant"));
 define("API_URL", env("API_URL", "http://localhost/elephant/api"));
 define("BASE_URL", env("APP_URL", APP_URL));
-define("DEBUG", env("APP_DEBUG", "false"));
+define("DEBUG", env("APP_DEBUG", false));
+define("APP_ENV", env("APP_ENV", "local")); // ENV_MODE: local (local for development) or production (production for production)
+define("MAINTENANCE_MODE", env("MAINTENANCE_MODE", false));
 
 // Database
 define("DB_HOST", env("DB_HOST", "localhost"));

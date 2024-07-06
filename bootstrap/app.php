@@ -6,8 +6,11 @@ require_once __DIR__ . "/../config/env.php";
 // Load config file
 require_once __DIR__ . "/../config/config.php";
 
+// Load maintenance file
+require_once __DIR__ . "/../config/maintenance.php";
+
 // App error debugging
-if (DEBUG && DEBUG == "true") {
+if (defined('DEBUG') && DEBUG == "true") {
     ini_set('display_errors', '1');
     ini_set('display_startup_errors', '1');
     error_reporting(E_ALL);
